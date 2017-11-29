@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import heapq
 
 class AStar:
     cost = None
@@ -56,6 +57,8 @@ class AStar:
         # - To get the successor states of a state with their costs, use: problem.expandWithCosts(state, self.cost)
         # - You should break your code into methods (two such stubs are written below)
         # - Don't forget to cache your result between returning it - TODO
+
+        openHeap =
 
         # TODO : VERY IMPORTANT: must return a tuple of (path, g_score(goal), h(I), developed)
         return ([], -1, -1, developed)
