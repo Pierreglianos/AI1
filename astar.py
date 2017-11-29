@@ -65,9 +65,15 @@ class AStar:
 
     def _getOpenStateWithLowest_f_score(self, open_set):
         # TODO : Implement
+
         raise NotImplementedError
 
     # Reconstruct the path from a given goal by its parent and so on
     def _reconstructPath(self, parents, goal):
         # TODO : Implement
-        raise NotImplementedError
+        father = parents.get(goal)
+        path = [goal]
+        while father is not None:
+            path.insert(0, father)
+            father = parents.get(father)
+        return path
