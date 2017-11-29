@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-import heapq
+from pqdict import minpq
 
 class AStar:
     cost = None
@@ -48,7 +48,7 @@ class AStar:
 
         # Save the g_score and f_score for the open nodes
         g_score = {source: 0}
-        open_set = {source: self.heuristic.estimate(problem, problem.initialState)}
+        #open_set = {source: self.heuristic.estimate(problem, problem.initialState)}dd
 
         developed = 0
 
@@ -58,9 +58,33 @@ class AStar:
         # - You should break your code into methods (two such stubs are written below)
         # - Don't forget to cache your result between returning it - TODO
 
-        openHeap =
+        openHeap = minpq()
+        initialHuristics = self.heuristic.estimate(problem, problem.initialState)
+        openHeap[source] = initialHuristics
+        parents[source] = None
 
-        # TODO : VERY IMPORTANT: must return a tuple of (path, g_score(goal), h(I), developed)
+        while len(openHeap) is not 0:
+            next = (openHeap.popitem())[0]
+            closed_set.add(next)
+            if problem.isGoal(next):
+                # TODO : make sure about h(I)
+                return (self._reconstructPath(parents, next), g_score[next], initialHuristics, developed)
+            for son in next.expand():
+                # TODO : make sure it's the right place to ++
+                developed += 1
+                newGValue = g_score[next] + self.cost.compute(next, son)
+                if son in openHeap or son in closed_set:
+                    if newGValue < g_score[son]:
+                        g_score[son] = newGValue
+                        parents[son]= next
+                        openHeap[son] = newGValue + self.heuristic.estimate(problem, next)
+                        if son in closed_set:
+                            closed_set.remove(son)
+                else:
+                    openHeap[son] = newGValue + self.heuristic.estimate(problem, next)
+                    parents[son] = next
+
+    # TODO : VERY IMPORTANT: must return a tuple of (path, g_score(goal), h(I), developed)
         return ([], -1, -1, developed)
 
     def _getOpenStateWithLowest_f_score(self, open_set):
