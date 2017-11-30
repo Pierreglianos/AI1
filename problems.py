@@ -93,17 +93,17 @@ class BusProblem(Problem):
         newFinished = []
 
         for order in previousState.waitingOrders:
-            if (order[0] == newLoc):
+            if order[0] == newLoc:
                 newOnBus.append(order)
             else:
                 newWaiting.append(order)
 
         for order in previousState.ordersOnBus:
-            if (order[1] == newLoc):
+            if order[1] == newLoc:
                 newFinished.append(order)
             else:
                 newOnBus.append(order)
-        if ((newOnBus == previousState.ordersOnBus) and (newFinished == previousState.finishedOrders)):
+        if (newOnBus == previousState.ordersOnBus) and (newFinished == previousState.finishedOrders):
             # TODO : cgange exception
             raise NotImplementedError
         newFinished.extend(previousState.finishedOrders)
