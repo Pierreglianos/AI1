@@ -48,7 +48,7 @@ class AStar:
 
         # Save the g_score and f_score for the open nodes
         g_score = {source: 0}
-        #open_set = {source: self.heuristic.estimate(problem, problem.initialState)}dd
+        open_set = {source: self.heuristic.estimate(problem, problem.initialState)}
 
         developed = 0
 
@@ -56,45 +56,43 @@ class AStar:
         # Tips:
         # - To get the successor states of a state with their costs, use: problem.expandWithCosts(state, self.cost)
         # - You should break your code into methods (two such stubs are written below)
-        # - Don't forget to cache your result between returning it - TODO
+        # - Don't forget to cache your result between returning i
 
-        openHeap = minpq()
         initialHuristics = self.heuristic.estimate(problem, problem.initialState)
-        openHeap[source] = initialHuristics
         parents[source] = None
 
-        while len(openHeap) is not 0:
-            next = (openHeap.popitem())[0]
-            closed_set.add(next)
-            if problem.isGoal(next):
-                # TODO : make sure about h(I)
-                return (self._reconstructPath(parents, next), g_score[next], initialHuristics, developed)
-            for son in next.expand():
-                # TODO : make sure it's the right place to ++
-                developed += 1
-                newGValue = g_score[next] + self.cost.compute(next, son)
-                if son in openHeap or son in closed_set:
+        while len(open_set) is not 0:
+            nextOpen = self._getOpenStateWithLowest_f_score(open_set)
+            open_set.pop(nextOpen)
+            closed_set.add(nextOpen)
+            if problem.isGoal(nextOpen):
+                res = (self._reconstructPath(parents, nextOpen), g_score[nextOpen], initialHuristics, developed)
+                self._storeInCache(problem, res)
+                return res
+            developed += 1
+            for son, cost in problem.expandWithCosts(nextOpen, self.cost):
+                newGValue = g_score[nextOpen] + cost
+                if son in open_set or son in closed_set:
                     if newGValue < g_score[son]:
                         g_score[son] = newGValue
-                        parents[son]= next
-                        openHeap[son] = newGValue + self.heuristic.estimate(problem, next)
+                        parents[son] = nextOpen
                         if son in closed_set:
                             closed_set.remove(son)
+                        open_set[son] = newGValue + self.heuristic.estimate(problem, son)
                 else:
-                    openHeap[son] = newGValue + self.heuristic.estimate(problem, next)
-                    parents[son] = next
+                    open_set[son] = newGValue + self.heuristic.estimate(problem, son)
+                    parents[son] = nextOpen
+                    g_score[son] = newGValue
 
     # TODO : VERY IMPORTANT: must return a tuple of (path, g_score(goal), h(I), developed)
+        self._storeInCache(problem, ([], -1, -1, developed))
         return ([], -1, -1, developed)
 
     def _getOpenStateWithLowest_f_score(self, open_set):
-        # TODO : Implement
-
-        raise NotImplementedError
+        return min(open_set, key=open_set.get)
 
     # Reconstruct the path from a given goal by its parent and so on
     def _reconstructPath(self, parents, goal):
-        # TODO : Implement
         father = parents.get(goal)
         path = [goal]
         while father is not None:

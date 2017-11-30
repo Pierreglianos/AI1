@@ -7,6 +7,8 @@ from ways.draw import plotPath, plotOrders
 from ways.tools import compute_distance
 import numpy as np
 
+from pqdict import minpq
+
 # Read files
 roads = load_map_from_csv(Consts.getDataFilePath("israel.csv"))
 prob = BusProblem.load(Consts.getDataFilePath("TLV_5.in"))
@@ -14,6 +16,16 @@ prob = BusProblem.load(Consts.getDataFilePath("TLV_5.in"))
 # TODO - Fix the missing parts in the following code
 # Print details of a random order
 order = prob.orders[np.random.choice(np.arange(len(prob.orders)))]
+
+# your code goes here
+
+myHeap = minpq()
+myHeap[1] = 3
+myHeap[4] = 2
+
+print("{}".format((myHeap.popitem())[1]))
+print("{}".format((myHeap.popitem())[1]))
+
 print("One of the orders is from junction #{} at ({}, {}) to #{} at ({}, {})".format(
     order[0], roads[order[0]].lat, roads[order[0]].lon,
     order[1], roads[order[1]].lat, roads[order[1]].lon))
