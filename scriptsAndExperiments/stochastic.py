@@ -28,15 +28,16 @@ solver = GreedyStochasticSolver(roads, mapAstar, scorer,
                                 Consts.STOCH_TEMPERATURE_DECAY_FUNCTION,
                                 Consts.STOCH_TOP_SCORES_TO_CONSIDER)
 results = np.zeros((REPEATS,))
+resultsPlot = np.zeros((REPEATS,))
 print("Stochastic repeats:")
 for i in range(REPEATS):
-    #print("{}..".format(i+1), end=" ", flush=True)
+    print("{}..".format(i+1), end=" ", flush=True)
     currRes = solver.solve(prob).getDistance() / 1000
-    if i == 0 or currRes < results[i - 1]:
-        results[i] = currRes
+    results[i] = currRes
+    if i == 0 or currRes < resultsPlot[i - 1]:
+        resultsPlot[i] = currRes
     else:
-        results[i] = results[i - 1]
-    print("{}..result {}".format(i + 1, results[i]))
+        resultsPlot[i] = resultsPlot[i - 1]
 
 print("\nDone!")
 
@@ -47,11 +48,18 @@ plt.title("Stochastic solver results")
 plt.ylabel("Distance")
 plt.xlabel("Number of iteration")
 plt.grid()
-plt.plot(results)
+plt.plot(resultsPlot)
+plt.axhline(y=greedyDistance, color='r')
 plt.show(block=False)
 plt.waitforbuttonpress()
 
 
 
 # TODO : Part2 - Remove the exit and perform the t-test
-#raise NotImplementedError
+
+# Mean
+print("Results mean : {}".format(np.mean(results)))
+# Standart deviation
+print("Results standart deviation : {}".format(np.std(results)))
+
+
