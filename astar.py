@@ -1,6 +1,5 @@
 import numpy as np
 import sys
-from pqdict import minpq
 
 class AStar:
     cost = None

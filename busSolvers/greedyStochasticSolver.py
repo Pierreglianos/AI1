@@ -6,7 +6,7 @@ class GreedyStochasticSolver(GreedySolver):
     _INITIAL_TEMPERATURE = None
     _N = None
 
-    def __init__(self, roads, astar, scoarrer, initialTemperature, temperatureDecayFactor, topNumToConsider):
+    def __init__(self, roads, astar, scorer, initialTemperature, temperatureDecayFactor, topNumToConsider):
         super().__init__(roads, astar, scorer)
 
         self._INITIAL_TEMPERATURE = initialTemperature
@@ -27,10 +27,10 @@ class GreedyStochasticSolver(GreedySolver):
         alpha = min(X);
         denom = np.sum(np.power(X[idxList]/alpha, -1/self.T))
         for i in idxList:
-            P[i] = [np.power(X[i]/alpha, -1/self.T)/denom]
+            P[i] = np.power(X[i]/alpha, -1/self.T)/denom
 
         # Update the temperature
-        self.T *= self._TEMERATURE_DECAY_FACTOR
+        self.T *= self._TEMPERATURE_DECAY_FACTOR
 
         return P
 
@@ -41,10 +41,8 @@ class GreedyStochasticSolver(GreedySolver):
 
         # TODO : Choose the next state stochastically according to the calculated distribution.
         # You should look for a suitable function in numpy.random.
-        nextIdx = None
 
-
-        return successors[nextIdx]
+        return np.random.choice(successors, p=P)
 
     # Find the N smallest values in the array, returns these indices in a list
     def _getMinN(self, arr):
