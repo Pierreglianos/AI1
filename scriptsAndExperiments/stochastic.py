@@ -7,7 +7,7 @@ from costs import L2DistanceCost
 from heuristics import L2DistanceHeuristic
 import numpy as np
 
-REPEATS = 50
+REPEATS = 150
 
 # Load the files
 roads = load_map_from_csv(Consts.getDataFilePath("israel.csv"))
@@ -31,7 +31,11 @@ results = np.zeros((REPEATS,))
 print("Stochastic repeats:")
 for i in range(REPEATS):
     #print("{}..".format(i+1), end=" ", flush=True)
-    results[i] = solver.solve(prob).getDistance() / 1000
+    currRes = solver.solve(prob).getDistance() / 1000
+    if i == 0 or currRes < results[i - 1]:
+        results[i] = currRes
+    else:
+        results[i] = results[i - 1]
     print("{}..result {}".format(i + 1, results[i]))
 
 print("\nDone!")
