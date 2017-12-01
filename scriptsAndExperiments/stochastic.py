@@ -7,7 +7,7 @@ from costs import L2DistanceCost
 from heuristics import L2DistanceHeuristic
 import numpy as np
 
-REPEATS = 150
+REPEATS = 50
 
 # Load the files
 roads = load_map_from_csv(Consts.getDataFilePath("israel.csv"))
@@ -30,15 +30,24 @@ solver = GreedyStochasticSolver(roads, mapAstar, scorer,
 results = np.zeros((REPEATS,))
 print("Stochastic repeats:")
 for i in range(REPEATS):
-    print("{}..".format(i+1), end=" ", flush=True)
+    #print("{}..".format(i+1), end=" ", flush=True)
     results[i] = solver.solve(prob).getDistance() / 1000
+    print("{}..result {}".format(i + 1, results[i]))
 
 print("\nDone!")
 
 # TODO : Part1 - Plot the diagram required in the instructions
 from matplotlib import pyplot as plt
-raise NotImplementedError
+#plt.axis([0, REPEATS + 5, 0, 2000])
+plt.title("Stochastic solver results")
+plt.ylabel("Distance")
+plt.xlabel("Number of iteration")
+plt.grid()
+plt.plot(results)
+plt.show(block=False)
+plt.waitforbuttonpress()
+
 
 
 # TODO : Part2 - Remove the exit and perform the t-test
-raise NotImplementedError
+#raise NotImplementedError
